@@ -15,7 +15,7 @@ Also, unless you have already done so, clone the repository with the quickstarts
 
 ```
 git clone [-b <dapr_version_tag>] https://github.com/dapr/quickstarts.git
-cd quickstarts/hello-kubernetes
+cd quickstarts/tutorials/hello-kubernetes
 ```
 
 > **Note**: See https://github.com/dapr/quickstarts#supported-dapr-runtime-version for supported tags. Use `git clone https://github.com/dapr/quickstarts.git` when using the edge version of dapr runtime.
@@ -96,7 +96,7 @@ component.dapr.io/statestore created
 
 <!-- STEP
 name: Deploy Node App
-sleep: 60
+sleep: 70
 expected_stdout_lines:
   - "service/nodeapp created"
   - "deployment.apps/nodeapp created"
@@ -120,6 +120,8 @@ This will deploy the Node.js app to Kubernetes. The Dapr control plane will auto
 `dapr.io/enabled: true` - this tells the Dapr control plane to inject a sidecar to this deployment.
 
 `dapr.io/app-id: nodeapp` - this assigns a unique id or name to the Dapr application, so it can be sent messages to and communicated with by other Dapr apps.
+
+`dapr.io/enable-api-logging: "true"` - this is added to node.yaml file by default to see the API logs.
 
 You'll also see the container image that you're deploying. If you want to update the code and deploy a new image, see **Next Steps** section.
 
@@ -214,7 +216,7 @@ dapr dashboard -k -p 9999
 
 ## Step 5 - Deploy the Python app with the Dapr sidecar
 
-Next, take a quick look at the Python app. Navigate to the Python app in the kubernetes quickstart: `cd quickstarts/hello-kubernetes/python` and open `app.py`.
+Next, take a quick look at the Python app. Navigate to the Python app in the kubernetes quickstart: `cd quickstarts/tutorials/hello-kubernetes/python` and open `app.py`.
 
 At a quick glance, this is a basic Python app that posts JSON messages to `localhost:3500`, which is the default listening port for Dapr. You can invoke the Node.js application's `neworder` endpoint by posting to `v1.0/invoke/nodeapp/method/neworder`. The message contains some `data` with an orderId that increments once per second:
 
@@ -293,7 +295,54 @@ Got a new order! Order ID: 3
 Successfully persisted state
 ```
 
-## Step 7 - Confirm successful persistence
+## Step 7 - Observe API call logs
+
+Now that the Node.js and Python applications are deployed, watch API call logs come through:
+
+Get the API call logs of the node app:
+
+<!-- STEP
+expected_stdout_lines:
+  - 'level=info msg="HTTP API Called: POST /v1.0/state/statestore"'
+expected_stderr_lines:
+output_match_mode: substring
+name: Read nodeapp logs
+-->
+
+```bash
+kubectl logs --selector=app=node -c daprd --tail=-1
+```
+
+<!-- END_STEP -->
+
+When save state API calls are made, you should see logs similar to this:
+
+```
+time="2022-04-25T22:46:09.82121774Z" level=info msg="HTTP API Called: POST /v1.0/state/statestore" app_id=nodeapp instance=nodeapp-7dd6648dd4-7hpmh scope=dapr.runtime.http-info type=log ver=1.7.2
+time="2022-04-25T22:46:10.828764787Z" level=info msg="HTTP API Called: POST /v1.0/state/statestore" app_id=nodeapp instance=nodeapp-7dd6648dd4-7hpmh scope=dapr.runtime.http-info type=log ver=1.7.2
+```
+
+Get the API call logs of the Python app:
+
+<!-- STEP
+expected_stdout_lines:
+  - 'level=info msg="HTTP API Called: POST /neworder"'
+expected_stderr_lines:
+output_match_mode: substring
+name: Read pythonapp logs
+-->
+
+```bash
+kubectl logs --selector=app=python -c daprd --tail=-1
+```
+<!-- END_STEP -->
+
+```
+time="2022-04-27T02:47:49.972688145Z" level=info msg="HTTP API Called: POST /neworder" app_id=pythonapp instance=pythonapp-545df48d55-jvj52 scope=dapr.runtime.http-info type=log ver=1.7.2
+time="2022-04-27T02:47:50.984994545Z" level=info msg="HTTP API Called: POST /neworder" app_id=pythonapp instance=pythonapp-545df48d55-jvj52 scope=dapr.runtime.http-info type=log ver=1.7.2
+```
+
+## Step 8 - Confirm successful persistence
 
 Call the Node.js app's order endpoint to get the latest order. Grab the external IP address that you saved before and, append "/order" and perform a GET request against it (enter it into your browser, use Postman, or curl it!):
 
@@ -304,7 +353,7 @@ curl $NODE_APP/order
 
 You should see the latest JSON in response!
 
-## Step 8 - Cleanup
+## Step 9 - Cleanup
 
 Once you're done, you can spin down your Kubernetes resources by navigating to the `./deploy` directory and running:
 

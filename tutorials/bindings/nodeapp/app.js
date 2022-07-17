@@ -13,12 +13,13 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const port = process.env.APP_PORT ?? '3000' ;
+
+
 require('isomorphic-fetch');
 
 const app = express();
 app.use(bodyParser.json());
-
-const port = 3000;
 
 app.post('/sample-topic', (req, res) => {
     console.log("Hello from Kafka!");

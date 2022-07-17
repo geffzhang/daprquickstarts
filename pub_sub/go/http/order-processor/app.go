@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 )
@@ -23,7 +24,7 @@ type Result struct {
 func getOrder(w http.ResponseWriter, r *http.Request) {
 	jsonData := []JSONObj{
 		{
-			PubsubName: "order_pub_sub",
+			PubsubName: "orderpubsub",
 			Topic:      "orders",
 			Route:      "orders",
 		},
@@ -60,6 +61,11 @@ func postOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	appPort := "6002"
+	if value, ok := os.LookupEnv("APP_PORT"); ok {
+		appPort = value
+	}
+
 	r := mux.NewRouter()
 
 	r.HandleFunc("/dapr/subscribe", getOrder).Methods("GET")
@@ -67,7 +73,7 @@ func main() {
 	// Dapr subscription routes orders topic to this route
 	r.HandleFunc("/orders", postOrder).Methods("POST")
 
-	if err := http.ListenAndServe(":6002", r); err != nil {
+	if err := http.ListenAndServe(":"+appPort, r); err != nil {
 		log.Panic(err)
 	}
 }

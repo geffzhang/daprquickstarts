@@ -1,13 +1,15 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
+const APP_PORT = process.env.APP_PORT ?? '5001';
+
 const app = express();
 app.use(bodyParser.json({ type: 'application/*+json' }));
 
 app.get('/dapr/subscribe', (_req, res) => {
     res.json([
         {
-            pubsubname: "order_pub_sub",
+            pubsubname: "orderpubsub",
             topic: "orders",
             route: "orders"
         }
@@ -20,4 +22,4 @@ app.post('/orders', (req, res) => {
     res.sendStatus(200);
 });
 
-app.listen(5001);
+app.listen(APP_PORT);

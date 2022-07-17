@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 )
@@ -32,13 +33,17 @@ func add(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var operands Operands
 	json.NewDecoder(r.Body).Decode(&operands)
-	fmt.Println(fmt.Sprintf("%s%f%s%f", "Adding ", operands.OperandOne, " to ", operands.OperandTwo))
+	fmt.Printf("Adding %f to %f\n", operands.OperandOne, operands.OperandTwo)
 	json.NewEncoder(w).Encode(operands.OperandOne + operands.OperandTwo)
 }
 
 func main() {
+	appPort := "6000"
+	if value, ok := os.LookupEnv("APP_PORT"); ok {
+		appPort = value
+	}
 	router := mux.NewRouter()
 
 	router.HandleFunc("/add", add).Methods("POST", "OPTIONS")
-	log.Fatal(http.ListenAndServe(":6000", router))
+	log.Fatal(http.ListenAndServe(":"+appPort, router))
 }

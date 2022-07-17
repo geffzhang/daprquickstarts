@@ -25,7 +25,7 @@ Now that Dapr is set up locally, clone the repo, then navigate to the Node.js ve
 
 ```sh
 git clone [-b <dapr_version_tag>] https://github.com/dapr/quickstarts.git
-cd quickstarts/hello-world/node
+cd quickstarts/tutorials/hello-world/node
 ```
 
 > **Note**: See https://github.com/dapr/quickstarts#supported-dapr-runtime-version for supported tags. Use `git clone https://github.com/dapr/quickstarts.git` when using the edge version of dapr runtime.
@@ -44,7 +44,7 @@ Dapr CLI creates an environment variable for the Dapr port, which defaults to 35
 Next, take a look at the ```neworder``` handler:
 
 ```js
-app.post('/neworder', (req, res) => {
+app.post('/neworder', async (req, res) => {
     const data = req.body.data;
     const orderId = data.orderId;
     console.log("Got a new order! Order ID: " + orderId);
@@ -54,23 +54,23 @@ app.post('/neworder', (req, res) => {
         value: data
     }];
 
-    fetch(stateUrl, {
-        method: "POST",
-        body: JSON.stringify(state),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    }).then((response) => {
+    try {
+        const response = await fetch(stateUrl, {
+            method: "POST",
+            body: JSON.stringify(state),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
         if (!response.ok) {
             throw "Failed to persist state.";
         }
-
         console.log("Successfully persisted state.");
         res.status(200).send();
-    }).catch((error) => {
+    } catch (error) {
         console.log(error);
         res.status(500).send({message: error});
-    });
+    }
 });
 ```
 
@@ -92,20 +92,19 @@ This approach, however, doesn't allow you to verify if the message successfully 
 The app also exposes a GET endpoint, `/order`:
 
 ```js
-app.get('/order', (_req, res) => {
-    fetch(`${stateUrl}/order`)
-        .then((response) => {
-            if (!response.ok) {
-                throw "Could not get state.";
-            }
-
-            return response.text();
-        }).then((orders) => {
-            res.send(orders);
-        }).catch((error) => {
-            console.log(error);
-            res.status(500).send({message: error});
-        });
+app.get('/order', async (_req, res) => {
+    try {
+        const response = await fetch(`${stateUrl}/order`)
+        if (!response.ok) {
+            throw "Could not get state.";
+        }
+        const orders = await response.text();
+        res.send(orders);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send({message: error});
+    }
 });
 ```
 

@@ -33,10 +33,14 @@ spec:
         dapr.io/enabled: "true"
         dapr.io/app-id: "nodeapp"
         dapr.io/app-port: "3000"
+        dapr.io/enable-api-logging: "true"
     spec:
       containers:
       - name: node
         image: ghcr.io/dapr/samples/hello-k8s-node:latest
+        env:
+        - name: APP_PORT
+          value: "3000"
         ports:
         - containerPort: 3000
         imagePullPolicy: Always

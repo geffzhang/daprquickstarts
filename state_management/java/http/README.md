@@ -38,8 +38,10 @@ mvn clean install
 <!-- STEP
 name: Run order-processor service
 expected_stdout_lines:
-  - '== APP == Getting Order:  "{\"orderId\":1}"'
-  - '== APP == Getting Order:  "{\"orderId\":2}"'
+  - '== APP == Saving order: 1'
+  - '== APP == Order saved: {"orderId":1}'
+  - '== APP == Deleting order: 1'
+  - '== APP == Deletion Status code :204'
   - "Exited App successfully"
 expected_stderr_lines:
 output_match_mode: substring
@@ -49,7 +51,7 @@ sleep: 15
     
 ```bash
 cd ./order-processor
-dapr run --app-id order-processor --components-path ../../../components/ -- java -jar target/order-processor-0.0.1-SNAPSHOT.jar
+dapr run --app-id order-processor --components-path ../../../components/ -- java -jar target/OrderProcessingService-0.0.1-SNAPSHOT.jar
 ```
 
 <!-- END_STEP -->
