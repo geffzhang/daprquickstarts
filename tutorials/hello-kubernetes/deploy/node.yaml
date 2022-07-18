@@ -2,6 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: nodeapp
+  namespace: dapr-test
   labels:
     app: node
 spec:
@@ -18,6 +19,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nodeapp
+  namespace: dapr-test
   labels:
     app: node
 spec:
@@ -35,6 +37,7 @@ spec:
         dapr.io/app-port: "3000"
         dapr.io/enable-api-logging: "true"
     spec:
+      serviceAccountName: nopdeapp
       containers:
       - name: node
         image: ghcr.io/dapr/samples/hello-k8s-node:latest

@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pythonapp
+  namespace: dapr-test
   labels:
     app: python
 spec:
@@ -18,6 +19,7 @@ spec:
         dapr.io/app-id: "pythonapp"
         dapr.io/enable-api-logging: "true"
     spec:
+      serviceAccountName: pythonapp
       containers:
       - name: python
         image: ghcr.io/dapr/samples/hello-k8s-python:latest
