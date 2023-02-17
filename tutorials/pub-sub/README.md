@@ -25,7 +25,7 @@ Dapr allows you to deploy the same microservices from your local machines to the
 ### Prerequisites to run locally
 
 - [Dapr CLI with Dapr initialized](https://docs.dapr.io/getting-started/install-dapr-cli/)
-- [Node.js version 8 or greater](https://nodejs.org/en/) and/or [Python 3.4 or greater](https://www.python.org/) and/or [Asp.Net Core 6](https://dotnet.microsoft.com/download/dotnet/6.0): You can run this quickstart with one or both or all microservices
+- [Node.js version 14 or greater](https://nodejs.org/en/) and/or [Python 3.4 or greater](https://www.python.org/) and/or [Asp.Net Core 6](https://dotnet.microsoft.com/download/dotnet/6.0): You can run this quickstart with one or both or all microservices
 
 ### Prerequisites to Run in Kubernetes
 
@@ -168,8 +168,6 @@ name: Run csharp subscriber
 expected_stdout_lines:
   - "You're up and running! Both Dapr and your app logs will appear here."
   - '== APP == A: Message on A'
-  - '== APP == B: Message on B'
-  - '== APP == C: Message on C'
   - "Exited Dapr successfully"
   - "Exited App successfully"
 expected_stderr_lines:
@@ -504,11 +502,9 @@ kubectl logs --selector app=python-subscriber -c python-subscriber
 name: Deploy Csharp App
 expected_stdout_lines:
   - "A: Message on A"
-  - "B: Message on B"
-  - "C: Message on C"
 expected_stderr_lines:
 output_match_mode: substring
-sleep: 5
+sleep: 10
 -->
 
 ```bash

@@ -1,6 +1,6 @@
 # Dapr pub/sub
 
-In this quickstart, you'll create a publisher microservice and a subscriber microservice to demonstrate how Dapr enables a publish-subcribe pattern. The publisher will generate messages of a specific topic, while subscribers will listen for messages of specific topics. See [Why Pub-Sub](#why-pub-sub) to understand when this pattern might be a good choice for your software architecture.
+In this quickstart, you'll create a publisher microservice and a subscriber microservice to demonstrate how Dapr enables a publish-subcribe pattern. The publisher will generate messages of a specific topic, while subscribers will listen for messages of specific topics. See [Why Pub-Sub](https://docs.dapr.io/developing-applications/building-blocks/pubsub/pubsub-overview/) to understand when this pattern might be a good choice for your software architecture.
 
 Visit [this](https://docs.dapr.io/developing-applications/building-blocks/pubsub/) link for more information about Dapr and Pub-Sub.
 
@@ -46,7 +46,7 @@ sleep: 10
 
 
 ```bash
-dapr run --app-id order-processor --components-path ../../../components/ --app-port 7001 -- dotnet run --project .
+dapr run --app-id order-processor --resources-path ../../../components/ --app-port 7002 -- dotnet run --project .
 ```
 
 <!-- END_STEP -->
@@ -82,11 +82,12 @@ sleep: 10
 -->
     
 ```bash
-dapr run --app-id checkout --components-path ../../../components/ -- dotnet run --project .
+dapr run --app-id checkout-sdk --resources-path ../../../components/ -- dotnet run --project .
 ```
 
 <!-- END_STEP -->
 
 ```bash
 dapr stop --app-id order-processor
+dapr stop --app-id checkout-sdk
 ```

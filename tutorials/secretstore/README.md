@@ -8,7 +8,7 @@ This tutorial shows you how to use the Dapr secrets API to access secrets from s
 
 ### Prerequisites to run Locally 
 - [Dapr CLI with Dapr initialized](https://docs.dapr.io/getting-started/install-dapr-cli/)
-- [Node.js version 8 or greater](https://nodejs.org/en/)
+- [Node.js version 14 or greater](https://nodejs.org/en/)
 - [Postman](https://www.getpostman.com/) [Optional]
 
 ### Prerequisites to run in Kubernetes
@@ -144,7 +144,7 @@ env:
 -->
 
 ```bash
-dapr run --app-id nodeapp --components-path ./components --app-port 3000 --dapr-http-port 3500 node app.js
+dapr run --app-id nodeapp --resources-path ./components --app-port 3000 --dapr-http-port 3500 node app.js
 ```
 
 <!-- END_STEP -->

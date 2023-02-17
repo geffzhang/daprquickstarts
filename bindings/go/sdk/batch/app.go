@@ -14,7 +14,7 @@ limitations under the License.
 package main
 
 /*
-dapr run --app-id batch-sdk --app-port 6002 --dapr-http-port 3502 --dapr-grpc-port 60002 --components-path ../../../components -- go run app.go
+dapr run --app-id batch-sdk --app-port 6002 --dapr-http-port 3502 --dapr-grpc-port 60002 --resources-path ../../../components -- go run .
 */
 
 import (
@@ -36,13 +36,13 @@ var (
 )
 
 type Orders struct {
-	Orders []Order `json:orders`
+	Orders []Order `json:"orders"`
 }
 
 type Order struct {
-	OrderId  int     `json:orderid`
-	Customer string  `json:customer`
-	Price    float64 `json:price`
+	OrderId  int     `json:"orderid"`
+	Customer string  `json:"customer"`
+	Price    float64 `json:"price"`
 }
 
 func processBatch(w http.ResponseWriter, r *http.Request) {
